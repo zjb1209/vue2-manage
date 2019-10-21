@@ -30,16 +30,20 @@
                     <el-form-item label="手机号码" props="telephone">
                          <el-input placeholder="请输入手机号码" v-model="formData.telephone"></el-input>
                     </el-form-item>
+                    <el-form-item label="时薪" props="salary">
+                        <el-input-number v-model="formData.salary" :min="10" :max="1000"></el-input-number>
+                    </el-form-item>
                     <el-form-item label="上传人员头像">
-                        <el-upload
-                             class="avatar-uploader"
-                             :action="baseUrl + 'v1/adding/employee'"
-                             :show-file-list="false"
-                             :on-success="uploadImg"
-                             :before-upload="beforeImgUpload">
-                            <img v-if="formData.image_path" :src="baseImgPath + formData.image_path" class="avatar">
-                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                        </el-upload>
+                            <el-upload
+                                class="avatar-uploader"
+                                :action="baseUrl + '/v1/addimg/employeeAvator'"
+                                :show-file-list="false"
+                                :on-success="uploadImg"
+                                :before-upload="beforeImgUpload">
+                                <img v-if="formData.image_path" :src="baseImgPath + formData.image_path" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+
                     </el-form-item>
                     <el-form-item label="备注" props="remark">
                          <el-input placeholder="请输入人员备注" v-model="formData.remark"></el-input>
@@ -59,6 +63,7 @@
 	import headTop from '../components/headTop'
 	import {baseUrl, baseImgPath} from '@/config/env'
 
+
     export default {
         data(){
             return{
@@ -70,6 +75,8 @@
 					idCard:'',
 					sex:'',
 					telephone:'',
+                    salary:'',
+					image_path: '',
 					belong:[],
 					remark:''
                 },
@@ -113,7 +120,7 @@
 		methods:{
         	uploadImg(res,img){
         		if(res.status == 1){
-        			 this.formatData.image_path = res.image_path;
+        			 this.formData.image_path = res.image_path;
                 }else{
         			this.$message.error('上传图片失败!!!')
                 }
@@ -141,4 +148,27 @@
 		font-size: 20px;
 		color: #333;
 	}
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #20a0ff;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 120px;
+        height: 120px;
+        line-height: 120px;
+        text-align: center;
+    }
+    .avatar {
+        width: 120px;
+        height: 120px;
+        display: block;
+    }
 </style>
