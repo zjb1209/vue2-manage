@@ -82,6 +82,7 @@ export const cityGuess = () => fetch('/v1/cities', {
 
 export const addShop = data => fetch('/shopping/addShop', data, 'POST');
 
+
 /**
  * 获取搜索地址
  */
@@ -226,3 +227,10 @@ export const getAddressById = address_id => fetch('/v1/addresse/' + address_id);
  */
 
 export const getUserCity = () => fetch('/v1/user/city/count');
+
+
+/**
+ * 添加商铺
+ */
+
+export const addEmployee = data => fetch('/v1/employee/addEmployee', data, 'POST');

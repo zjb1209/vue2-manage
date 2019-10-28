@@ -14,8 +14,8 @@
                         <el-input placeholder="请输入身份证号" v-model="formData.idCard"></el-input>
                     </el-form-item>
                     <el-form-item label="性别" props="sex">
-                        <el-radio v-model="formData.radio" label="F">男</el-radio>
-                        <el-radio v-model="formData.radio" label="M">女</el-radio>
+                        <el-radio v-model="formData.sex" label="F">男</el-radio>
+                        <el-radio v-model="formData.sex" label="M">女</el-radio>
                     </el-form-item>
                     <el-form-item label="人员归属">
                          <el-select v-model="formData.belong"  placeholder="请选择">
@@ -43,6 +43,28 @@
                                 <img v-if="formData.image_path" :src="baseImgPath + formData.image_path" class="avatar">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
+                    </el-form-item>
+                    <el-form-item label="员工生活照片">
+                            <el-upload
+                                class="upload-demo"
+                                action="https://jsonplaceholder.typicode.com/posts/"
+                                :before-upload="beforeImgUpload"
+                                :before-remove="beforeRemove2"
+                                 multiple
+                                :limit="3"
+                                :on-exceed="handleExceed"
+                                :file-list="fileList">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                                <div slot="tip" class="el-upload__tip">只能上传jpg/png,且不超过500KB</div>
+                            </el-upload>
+                    </el-form-item>
+                    <el-form-item label="入职时间">
+                        <el-date-picker
+                            v-model="formData.enterTime"
+                            type="date"
+                            :picker-options="pickerOptions"
+                            placeholder="选择入职日期">
+                        </el-date-picker>
 
                     </el-form-item>
                     <el-form-item label="备注" props="remark">
@@ -62,6 +84,7 @@
 <script>
 	import headTop from '../components/headTop'
 	import {baseUrl, baseImgPath} from '@/config/env'
+	import {cityGuess, addEmployee, searchplace, foodCategory} from '@/api/getData'
 
 
     export default {
@@ -78,6 +101,7 @@
                     salary:'',
 					image_path: '',
 					belong:[],
+					enterTime:'',
 					remark:''
                 },
                 rules:{
@@ -98,6 +122,11 @@
                         { required:true,message:'请输入人员备注信息',trigger:'blur'}
                     ]
                 },
+				pickerOptions:{
+				    disabledDate(time){
+				    	return time.getTime() > Date.now();
+                    }
+                },
 				belong: [
 					{
 						value: '0',
@@ -112,6 +141,10 @@
 						value: '3',
 						label: '实习人员'
 					}],
+				fileList:[
+					       {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
+                           {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
+                         ]
             }
         },
 		components: {
@@ -135,7 +168,29 @@
         		if(!isLt2M){
         			this.$message.error('上传头像图片大小不能超过2M');
                 }
-        		return isRightType && isLt2M;
+        		//return isRightType && isLt2M;
+            },
+			submitForm(formDate){
+        		this.$refs[formDate].validate(async (valid) =>{
+        			if(valid){
+        				try{
+							let result = await addEmployee(this.formData);
+                        }catch(err){
+							console.log(err)
+						}
+
+                    }
+                })
+            },
+			handleExceed(files, fileList) {
+        		''
+				this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+			},
+			beforeRemove2(file, fileList) {
+				return this.$confirm(`确定移除 ${ file.name }？`);
+			},
+			handleRemove:function(){
+
             }
         }
     }
