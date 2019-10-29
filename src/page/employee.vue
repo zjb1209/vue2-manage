@@ -31,7 +31,7 @@
                          <el-input placeholder="请输入手机号码" v-model="formData.telephone"></el-input>
                     </el-form-item>
                     <el-form-item label="时薪" props="salary">
-                        <el-input-number v-model="formData.salary" :min="10" :max="1000"></el-input-number>
+                        <el-input-number v-model="formData.salary" @change="handleChange" :min="10" :max="1000"></el-input-number>
                     </el-form-item>
                     <el-form-item label="上传人员头像">
                             <el-upload
@@ -183,15 +183,25 @@
                 })
             },
 			handleExceed(files, fileList) {
-        		''
 				this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
 			},
 			beforeRemove2(file, fileList) {
 				return this.$confirm(`确定移除 ${ file.name }？`);
 			},
-			handleRemove:function(){
+			handleChange(value){
+				if(value == 10){
+					const h = this.$createElement;
+					//this.$message('人员时薪最低为10元每小时！！！');
+					this.$message({
+						message: h('p', null, [
+							h('span', null, ''),
+							h('i', { style: 'color: red' }, '人员时薪最低为10元每小时！！！')
+                        ])
+                    });
+                }
 
             }
+
         }
     }
 </script>
